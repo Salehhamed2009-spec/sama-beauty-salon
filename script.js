@@ -2,7 +2,7 @@
 
 /*
   SAMA BEAUTY
-  V2 – funktionierende Demo
+  V3 – Professional & Beautiful Demo
 */
 
 
@@ -57,6 +57,9 @@ const comparisonLine =
 const comparisonHandle =
   document.getElementById("comparisonHandle");
 
+const comparison =
+  document.getElementById("comparison");
+
 
 function updateComparison(value) {
 
@@ -98,8 +101,8 @@ if (comparisonRange) {
 }
 
 
-// Auch auf Mouse-Events reagieren für bessere Interaktivität
-if (comparisonHandle) {
+// Mouse drag functionality for better UX
+if (comparisonHandle && comparison) {
 
   let isDragging = false;
 
@@ -112,10 +115,32 @@ if (comparisonHandle) {
   });
 
   document.addEventListener("mousemove", function (e) {
-    if (!isDragging || !comparisonRange) return;
+    if (!isDragging || !comparisonRange || !comparison) return;
 
-    const rect = comparisonRange.getBoundingClientRect();
+    const rect = comparison.getBoundingClientRect();
     const percent = ((e.clientX - rect.left) / rect.width) * 100;
+
+    if (percent >= 0 && percent <= 100) {
+      comparisonRange.value = percent;
+      updateComparison(percent);
+    }
+  });
+
+  // Touch support for mobile
+  comparisonHandle.addEventListener("touchstart", function () {
+    isDragging = true;
+  });
+
+  document.addEventListener("touchend", function () {
+    isDragging = false;
+  });
+
+  document.addEventListener("touchmove", function (e) {
+    if (!isDragging || !comparisonRange || !comparison) return;
+
+    const touch = e.touches[0];
+    const rect = comparison.getBoundingClientRect();
+    const percent = ((touch.clientX - rect.left) / rect.width) * 100;
 
     if (percent >= 0 && percent <= 100) {
       comparisonRange.value = percent;
@@ -1221,5 +1246,5 @@ renderTimes();
 showStep(1);
 
 console.log(
-  "Sama Beauty V2 wurde erfolgreich geladen."
+  "Sama Beauty V3 wurde erfolgreich geladen."
 );
