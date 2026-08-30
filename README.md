@@ -1,1 +1,0 @@
-# sama-beauty-salon
