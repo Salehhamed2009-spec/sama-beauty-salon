@@ -98,6 +98,34 @@ if (comparisonRange) {
 }
 
 
+// Auch auf Mouse-Events reagieren für bessere Interaktivität
+if (comparisonHandle) {
+
+  let isDragging = false;
+
+  comparisonHandle.addEventListener("mousedown", function () {
+    isDragging = true;
+  });
+
+  document.addEventListener("mouseup", function () {
+    isDragging = false;
+  });
+
+  document.addEventListener("mousemove", function (e) {
+    if (!isDragging || !comparisonRange) return;
+
+    const rect = comparisonRange.getBoundingClientRect();
+    const percent = ((e.clientX - rect.left) / rect.width) * 100;
+
+    if (percent >= 0 && percent <= 100) {
+      comparisonRange.value = percent;
+      updateComparison(percent);
+    }
+  });
+
+}
+
+
 /* =========================================
    GALLERY
 ========================================= */
@@ -434,6 +462,8 @@ function chooseService(name) {
 
   }
 
+  showStep(1);
+
 }
 
 
@@ -463,7 +493,10 @@ document
 
     button.addEventListener(
       "click",
-      function () {
+      function (e) {
+
+        e.preventDefault();
+        e.stopPropagation();
 
         chooseService(
           button.dataset.service
@@ -476,11 +509,15 @@ document
 
         if (bookingSection) {
 
-          bookingSection.scrollIntoView({
-            behavior: "smooth"
-          });
+          setTimeout(function () {
+            bookingSection.scrollIntoView({
+              behavior: "smooth"
+            });
+          }, 100);
 
         }
+
+        showStep(1);
 
       }
     );
@@ -715,6 +752,8 @@ function renderTimes() {
 
       button.textContent =
         time + " Uhr";
+
+      button.className = "time-button";
 
 
       button.addEventListener(
@@ -1178,6 +1217,8 @@ if (newBooking) {
 updateComparison(50);
 
 renderTimes();
+
+showStep(1);
 
 console.log(
   "Sama Beauty V2 wurde erfolgreich geladen."
